@@ -2,8 +2,8 @@ import mongoose, { Schema, Document, models, model } from 'mongoose';
 
 export interface IUser extends Document {
   name: string;
-  email: string;
-  role: string;
+  number: string;
+  address: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -15,25 +15,31 @@ const UserSchema: Schema = new Schema(
       required: [true, 'Please provide a name'],
       maxlength: [60, 'Name cannot be more than 60 characters'],
     },
-    email: {
+    number: {
       type: String,
-      required: [true, 'Please provide an email'],
+      required: [true, 'Please provide a number'],
       unique: true,
-      match: [
-        /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-        'Please provide a valid email',
-      ],
     },
-    role: {
+    address: {
       type: String,
-      enum: ['user', 'admin', 'editor'],
-      default: 'user',
+      required: [true, 'Please provide an address'],
     },
   },
   {
     timestamps: true,
   }
 );
+
+// Add virtual for accounts
+UserSchema.virtual('accounts', {
+  ref: 'Account',
+  localField: '_id',
+  foreignField: 'userId',
+});
+
+// Ensure virtual fields are serialized
+UserSchema.set('toJSON', { virtuals: true });
+UserSchema.set('toObject', { virtuals: true });
 
 // Prevent duplicate model error in development with hot reloading
 export default models.User || model<IUser>('User', UserSchema);
