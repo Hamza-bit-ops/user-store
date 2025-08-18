@@ -1,3 +1,4 @@
+// lib/db/mongodb.ts
 import mongoose, { Mongoose } from "mongoose";
 
 const MONGODB_URI = process.env.MONGODB_URI as string;
@@ -11,13 +12,10 @@ interface MongooseCache {
   promise: Promise<Mongoose> | null;
 }
 
-// Extend global type
 declare global {
-  // eslint-disable-next-line no-var
   var mongoose: MongooseCache | undefined;
 }
 
-// ✅ Safe initialization (no undefined error now)
 const cached: MongooseCache = global.mongoose ?? { conn: null, promise: null };
 global.mongoose = cached;
 
@@ -27,15 +25,24 @@ async function dbConnect(): Promise<Mongoose> {
   }
 
   if (!cached.promise) {
-    const opts = { bufferCommands: false };
+    const opts = {
+      bufferCommands: false,
+      // Disable TLS/SSL for local connections
+      tls: false,
+      ssl: false
+    };
 
-    cached.promise = mongoose.connect(MONGODB_URI, opts);
+    cached.promise = mongoose.connect(MONGODB_URI, opts).then(mongoose => {
+      console.log("MongoDB connected successfully");
+      return mongoose;
+    });
   }
 
   try {
     cached.conn = await cached.promise;
   } catch (e) {
     cached.promise = null;
+    console.error("MongoDB connection error:", e);
     throw e;
   }
 
