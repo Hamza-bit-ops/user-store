@@ -27,14 +27,16 @@ async function dbConnect(): Promise<Mongoose> {
   if (!cached.promise) {
     const opts = {
       bufferCommands: false,
-      // Disable TLS/SSL for local connections
-      tls: false,
-      ssl: false
+      // For MongoDB Atlas, TLS/SSL is required
+      // Remove the tls: false and ssl: false options
     };
 
     cached.promise = mongoose.connect(MONGODB_URI, opts).then(mongoose => {
       console.log("MongoDB connected successfully");
       return mongoose;
+    }).catch(error => {
+      console.error("MongoDB connection error:", error);
+      throw error;
     });
   }
 
