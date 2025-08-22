@@ -1,25 +1,26 @@
 import { Schema, model, models } from 'mongoose';
 
 export interface IItem {
-  name: string;
   amount: string;
-  description?: string;
+  date: string;
+  time: string;
 }
 
 const ItemSchema = new Schema<IItem>(
   {
-    name: {
-      type: String,
-      required: [true, 'Name is required'],
-      trim: true
-    },
     amount: {
       type: String,
       required: [true, 'Amount is required'],
       trim: true
     },
-    description: {
+    date: {
       type: String,
+      required: [true, 'Date is required'],
+      trim: true
+    },
+    time: {
+      type: String,
+      required: [true, 'Time is required'],
       trim: true
     }
   },

@@ -2,7 +2,7 @@
 
 import { useState, FormEvent, useEffect } from 'react';
 import { AccountEntry } from '@/types/Accounts';
-import { User, Phone, MapPin, Save, Loader2 } from 'lucide-react';
+import { User, Phone, MapPin, Save, Loader2, Mail, UserPlus } from 'lucide-react';
 
 interface UserFormProps {
   onSubmit: (userData: UserData) => void;
@@ -28,8 +28,10 @@ export default function UserForm({ onSubmit, initialValues, buttonText = 'Save' 
   });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
+    setIsLoaded(true);
     if (initialValues) setUserData(initialValues);
   }, [initialValues]);
 
@@ -80,77 +82,110 @@ export default function UserForm({ onSubmit, initialValues, buttonText = 'Save' 
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      {/* Inputs */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Name */}
-        <div className="md:col-span-2">
-          <label htmlFor="name" className="flex items-center text-sm font-semibold text-gray-700 mb-2">
-            <User className="w-4 h-4 mr-2 text-gray-500" /> Full Name
-          </label>
-          <input
-            type="text"
-            name="name"
-            value={userData.name}
-            onChange={handleChange}
-            placeholder="John Doe"
-            className={`w-full px-4 py-3 rounded-lg border text-sm focus:outline-none focus:ring-2 transition-all duration-200 ${
-              errors.name ? 'border-red-400 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'
-            }`}
-          />
-          {errors.name && <p className="text-xs text-red-500 mt-1">{errors.name}</p>}
+    <div className="max-w-4xl mx-auto">
+      <div className={`bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20 shadow-2xl transition-all duration-1000 ${isLoaded ? 'scale-100 opacity-100' : 'scale-95 opacity-0'}`}>
+        <div className="flex items-center mb-8">
+          <div className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 p-4 rounded-2xl mr-4">
+            <UserPlus className="h-8 w-8 text-white" />
+          </div>
+          <h2 className="text-3xl font-bold bg-gradient-to-r from-indigo-300 via-purple-300 to-pink-300 bg-clip-text text-transparent">
+            {initialValues ? 'Edit User' : 'Create New User'}
+          </h2>
         </div>
 
-        {/* Phone */}
-        <div>
-          <label htmlFor="number" className="flex items-center text-sm font-semibold text-gray-700 mb-2">
-            <Phone className="w-4 h-4 mr-2 text-gray-500" /> Phone Number
-          </label>
-          <input
-            type="tel"
-            name="number"
-            value={userData.number}
-            onChange={handleChange}
-            placeholder="+92 300 1234567"
-            className={`w-full px-4 py-3 rounded-lg border text-sm focus:outline-none focus:ring-2 transition-all duration-200 ${
-              errors.number ? 'border-red-400 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'
-            }`}
-          />
-          {errors.number && <p className="text-xs text-red-500 mt-1">{errors.number}</p>}
-        </div>
+        <form onSubmit={handleSubmit} className="space-y-8">
+          {/* Name Field */}
+          <div>
+            <label htmlFor="name" className="flex items-center text-base font-semibold text-gray-200 mb-3">
+              <User className="w-5 mr-3 text-indigo-400" /> Full Name
+            </label>
+            <div className="relative">
+              <input
+                type="text"
+                name="name"
+                value={userData.name}
+                onChange={handleChange}
+                placeholder="Enter full name"
+                className={`w-full px-4 py-4 pl-12 rounded-2xl border text-base focus:outline-none focus:ring-2 transition-all duration-300 bg-white/10 backdrop-blur-md text-white placeholder-gray-400 ${
+                  errors.name ? 'border-pink-500/50 focus:ring-pink-500' : 'border-white/20 focus:ring-indigo-500 focus:border-indigo-500/50'
+                }`}
+              />
+              <User className="absolute left-4 top-4 h-6 w-6 text-gray-400" />
+            </div>
+            {errors.name && <p className="text-sm text-pink-400 mt-2 flex items-center"><span className="w-2 h-2 bg-pink-500 rounded-full mr-2"></span> {errors.name}</p>}
+          </div>
 
-        {/* Address */}
-        <div>
-          <label htmlFor="address" className="flex items-center text-sm font-semibold text-gray-700 mb-2">
-            <MapPin className="w-4 h-4 mr-2 text-gray-500" /> Address
-          </label>
-          <textarea
-            name="address"
-            value={userData.address}
-            onChange={handleChange}
-            placeholder="Enter complete address"
-            rows={4}
-            className={`w-full px-4 py-3 rounded-lg border text-sm resize-none focus:outline-none focus:ring-2 transition-all duration-200 ${
-              errors.address ? 'border-red-400 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'
-            }`}
-          />
-          {errors.address && <p className="text-xs text-red-500 mt-1">{errors.address}</p>}
-        </div>
+          {/* Phone and Address Fields */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Phone Field */}
+            <div>
+              <label htmlFor="number" className="flex items-center text-base font-semibold text-gray-200 mb-3">
+                <Phone className="w-5 h-5 mr-3 text-purple-400" /> Phone Number
+              </label>
+              <div className="relative">
+                <input
+                  type="tel"
+                  name="number"
+                  value={userData.number}
+                  onChange={handleChange}
+                  placeholder="+92 300 1234567"
+                  className={`w-full px-4 py-4 pl-12 rounded-2xl border text-base focus:outline-none focus:ring-2 transition-all duration-300 bg-white/10 backdrop-blur-md text-white placeholder-gray-400 ${
+                    errors.number ? 'border-pink-500/50 focus:ring-pink-500' : 'border-white/20 focus:ring-indigo-500 focus:border-indigo-500/50'
+                  }`}
+                />
+                <Phone className="absolute left-4 top-4 h-6 w-6 text-gray-400" />
+              </div>
+              {errors.number && <p className="text-sm text-pink-400 mt-2 flex items-center"><span className="w-2 h-2 bg-pink-500 rounded-full mr-2"></span> {errors.number}</p>}
+            </div>
+
+            {/* Address Field */}
+            <div>
+              <label htmlFor="address" className="flex items-center text-base font-semibold text-gray-200 mb-3">
+                <MapPin className="w-5 h-5 mr-3 text-pink-400" /> Address
+              </label>
+              <div className="relative">
+                <textarea
+                  name="address"
+                  value={userData.address}
+                  onChange={handleChange}
+                  placeholder="Enter complete address"
+                  rows={4}
+                  className={`w-full px-4 py-4 pl-12 rounded-2xl border text-base resize-none focus:outline-none focus:ring-2 transition-all duration-300 bg-white/10 backdrop-blur-md text-white placeholder-gray-400 ${
+                    errors.address ? 'border-pink-500/50 focus:ring-pink-500' : 'border-white/20 focus:ring-indigo-500 focus:border-indigo-500/50'
+                  }`}
+                />
+                <MapPin className="absolute left-4 top-4 h-6 w-6 text-gray-400" />
+              </div>
+              {errors.address && <p className="text-sm text-pink-400 mt-2 flex items-center"><span className="w-2 h-2 bg-pink-500 rounded-full mr-2"></span> {errors.address}</p>}
+            </div>
+          </div>
+
+          {/* Submit Button */}
+          <div className="flex justify-center pt-8 border-t border-white/10">
+            <button
+              type="submit"
+              disabled={loading}
+              className={`group inline-flex items-center px-8 py-4 text-base font-semibold rounded-2xl shadow-2xl transform transition-all duration-300 hover:scale-105 ${
+                loading 
+                  ? 'bg-gray-600 text-gray-400 cursor-not-allowed' 
+                  : 'bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:from-indigo-600 hover:via-purple-600 hover:to-pink-600 text-white focus:ring-2 focus:ring-indigo-500 shadow-indigo-500/25'
+              }`}
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="w-6 h-6 mr-2 animate-spin" />
+                  {initialValues ? 'Updating...' : 'Creating...'}
+                </>
+              ) : (
+                <>
+                  <Save className="w-6 h-6 mr-2 group-hover:animate-pulse" />
+                  {buttonText}
+                </>
+              )}
+            </button>
+          </div>
+        </form>
       </div>
-
-      {/* Submit */}
-      <div className="flex justify-end pt-4 border-t">
-        <button
-          type="submit"
-          disabled={loading}
-          className={`inline-flex items-center px-6 py-3 text-sm font-medium text-white rounded-lg shadow-sm transition-all ${
-            loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 focus:ring-2 focus:ring-blue-500'
-          }`}
-        >
-          {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
-          {loading ? (initialValues ? 'Updating...' : 'Creating...') : buttonText}
-        </button>
-      </div>
-    </form>
+    </div>
   );
 }
