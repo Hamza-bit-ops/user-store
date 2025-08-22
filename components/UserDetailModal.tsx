@@ -170,6 +170,7 @@ export default function UserDetailsModal({ user, onClose, onEdit, onDelete }: Us
       setIsSubmitting(false);
     }
   };
+  
 
 const handleUpdateEntry = async () => {
   if (!validateForm() || !editingEntry || !editingEntry._id || isSubmitting || !user._id) return;
