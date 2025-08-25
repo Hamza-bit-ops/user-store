@@ -77,6 +77,24 @@ export default function ItemsPage() {
     [filteredItems, page]
   );
 
+  // ---- Totals ----
+  const overallTotal = useMemo(
+    () => allItems.reduce((sum, i) => sum + (parseFloat(i.amount) || 0), 0),
+    [allItems]
+  );
+
+  const filteredTotal = useMemo(
+    () => filteredItems.reduce((sum, i) => sum + (parseFloat(i.amount) || 0), 0),
+    [filteredItems]
+  );
+
+  const todayTotal = useMemo(() => {
+    const todayStr = new Date().toLocaleDateString("en-GB"); // dd/mm/yyyy
+    return allItems
+      .filter((i) => i.date === todayStr)
+      .reduce((sum, i) => sum + (parseFloat(i.amount) || 0), 0);
+  }, [allItems]);
+
   const pageTotal = useMemo(
     () => paginated.reduce((sum, i) => sum + (parseFloat(i.amount) || 0), 0),
     [paginated]
@@ -203,6 +221,22 @@ export default function ItemsPage() {
           >
             Clear
           </button>
+        </div>
+
+        {/* Totals Summary */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div className="bg-blue-100 p-4 rounded shadow text-center">
+            <p className="text-gray-600 text-sm">Overall Total</p>
+            <p className="text-xl font-bold text-blue-700">{overallTotal.toFixed(2)}</p>
+          </div>
+          <div className="bg-green-100 p-4 rounded shadow text-center">
+            <p className="text-gray-600 text-sm">Filtered Total</p>
+            <p className="text-xl font-bold text-green-700">{filteredTotal.toFixed(2)}</p>
+          </div>
+          <div className="bg-yellow-100 p-4 rounded shadow text-center">
+            <p className="text-gray-600 text-sm">Today&apos;s Total</p>
+            <p className="text-xl font-bold text-yellow-700">{todayTotal.toFixed(2)}</p>
+          </div>
         </div>
 
         {error && <p className="text-red-600 mb-4">{error}</p>}
