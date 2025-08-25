@@ -13,7 +13,7 @@ interface Params {
 
 // Enhanced ID validation for MongoDB
 function isValidMongoId(id: string): boolean {
-  return mongoose.Types.ObjectId.isValid(id) && new mongoose.Types.ObjectId(id).toString() === id;
+  return mongoose.Types.ObjectId.isValid(id);
 }
 
 // Helper function to create error responses
@@ -29,9 +29,10 @@ function createErrorResponse(message: string, details?: any, status = 500) {
 // GET - Get a specific account entry
 export async function GET(req: NextRequest, { params }: Params) {
   try {
-    console.log('GET account request - User ID:', params.id, 'Account ID:', params.accountId);
+    console.log('🔍 GET account request - User ID:', params.id, 'Account ID:', params.accountId);
     
     if (!isValidMongoId(params.id) || !isValidMongoId(params.accountId)) {
+      console.log('❌ Invalid MongoDB ID format');
       return createErrorResponse('Invalid MongoDB ID format', { 
         userId: params.id, 
         accountId: params.accountId 
@@ -39,36 +40,58 @@ export async function GET(req: NextRequest, { params }: Params) {
     }
 
     await dbConnect();
+    console.log('✅ Database connected');
     
-    // Convert string IDs to ObjectId
-    const userId = new mongoose.Types.ObjectId(params.id);
-    const accountId = new mongoose.Types.ObjectId(params.accountId);
-
-    // Find user
-    const user = await User.findById(userId);
+    // Find user first
+    const user = await User.findById(params.id);
+    console.log('👤 User lookup result:', user ? `Found: ${user.name}` : 'Not found');
+    
     if (!user) {
       return createErrorResponse('User not found', { userId: params.id }, 404);
     }
 
-    // Find account
-    const account = await Account.findOne({
-      _id: accountId,
-      userId: userId
-    });
+    // Find account - try both ways for debugging
+    console.log('🔍 Looking for account with:');
+    console.log('  Account ID:', params.accountId);
+    console.log('  User ID:', params.id);
     
-    if (!account) {
-      return createErrorResponse('Account entry not found', { 
-        accountId: params.accountId, 
-        userId: params.id
-      }, 404);
+    // Method 1: Find by _id and userId
+    const account1 = await Account.findOne({
+      _id: params.accountId,
+      userId: params.id
+    });
+    console.log('📊 Method 1 (findOne with both IDs):', account1 ? 'Found' : 'Not found');
+    
+    // Method 2: Find by _id only (for debugging)
+    const account2 = await Account.findById(params.accountId);
+    console.log('📊 Method 2 (findById only):', account2 ? `Found, belongs to user: ${account2.userId}` : 'Not found');
+    
+    if (!account1) {
+      // More detailed error for debugging
+      if (account2) {
+        console.log('❌ Account exists but belongs to different user');
+        console.log('  Account userId:', account2.userId);
+        console.log('  Requested userId:', params.id);
+        return createErrorResponse('Account entry not found or does not belong to this user', { 
+          accountId: params.accountId, 
+          userId: params.id,
+          actualUserId: account2.userId.toString()
+        }, 404);
+      } else {
+        console.log('❌ Account does not exist at all');
+        return createErrorResponse('Account entry not found', { 
+          accountId: params.accountId
+        }, 404);
+      }
     }
     
+    console.log('✅ Account found successfully');
     return NextResponse.json({ 
       success: true,
-      account 
+      account: account1 
     }, { status: 200 });
   } catch (error: any) {
-    console.error('Failed to fetch account:', error);
+    console.error('❌ Failed to fetch account:', error);
     return createErrorResponse('Failed to fetch account', error.message, 500);
   }
 }
@@ -76,9 +99,10 @@ export async function GET(req: NextRequest, { params }: Params) {
 // PUT - Update an account entry
 export async function PUT(req: NextRequest, { params }: Params) {
   try {
-    console.log('PUT account request - User ID:', params.id, 'Account ID:', params.accountId);
+    console.log('🔍 PUT account request - User ID:', params.id, 'Account ID:', params.accountId);
     
     if (!isValidMongoId(params.id) || !isValidMongoId(params.accountId)) {
+      console.log('❌ Invalid MongoDB ID format');
       return createErrorResponse('Invalid MongoDB ID format', { 
         userId: params.id, 
         accountId: params.accountId 
@@ -86,6 +110,7 @@ export async function PUT(req: NextRequest, { params }: Params) {
     }
     
     const body = await req.json();
+    console.log('📝 Request body:', body);
     const { type, amount, description } = body;
 
     // Validation
@@ -122,23 +147,38 @@ export async function PUT(req: NextRequest, { params }: Params) {
     }
 
     await dbConnect();
+    console.log('✅ Database connected');
     
-    // Convert string IDs to ObjectId
-    const userId = new mongoose.Types.ObjectId(params.id);
-    const accountId = new mongoose.Types.ObjectId(params.accountId);
-
     // Verify user exists
-    const user = await User.findById(userId);
+    const user = await User.findById(params.id);
+    console.log('👤 User lookup result:', user ? `Found: ${user.name}` : 'Not found');
+    
     if (!user) {
       return createErrorResponse('User not found', { userId: params.id }, 404);
     }
 
-    // Update account entry
-    const accountEntry = await Account.findOneAndUpdate(
-      { 
-        _id: accountId, 
-        userId: userId 
-      },
+    // Check if account exists first (for debugging)
+    const existingAccount = await Account.findById(params.accountId);
+    console.log('🔍 Existing account check:', existingAccount ? `Found, belongs to: ${existingAccount.userId}` : 'Not found');
+    
+    if (!existingAccount) {
+      return createErrorResponse('Account entry not found', { 
+        accountId: params.accountId
+      }, 404);
+    }
+    
+    if (existingAccount.userId.toString() !== params.id) {
+      return createErrorResponse('Account entry does not belong to this user', { 
+        accountId: params.accountId,
+        userId: params.id,
+        actualUserId: existingAccount.userId.toString()
+      }, 403);
+    }
+
+    // Update account entry - use findByIdAndUpdate for simplicity
+    console.log('🔄 Updating account...');
+    const accountEntry = await Account.findByIdAndUpdate(
+      params.accountId,
       { 
         type, 
         amount: numAmount, 
@@ -151,14 +191,7 @@ export async function PUT(req: NextRequest, { params }: Params) {
       }
     );
 
-    if (!accountEntry) {
-      return createErrorResponse('Account entry not found or does not belong to this user', { 
-        accountId: params.accountId,
-        userId: params.id
-      }, 404);
-    }
-
-    console.log('Account updated successfully:', accountEntry);
+    console.log('✅ Account updated successfully:', accountEntry);
     
     return NextResponse.json({ 
       success: true,
@@ -166,7 +199,7 @@ export async function PUT(req: NextRequest, { params }: Params) {
       account: accountEntry 
     }, { status: 200 });
   } catch (error: any) {
-    console.error('Failed to update account entry:', error);
+    console.error('❌ Failed to update account entry:', error);
     
     if (error.name === 'ValidationError') {
       const errors = Object.values(error.errors).map((err: any) => err.message);
@@ -180,9 +213,10 @@ export async function PUT(req: NextRequest, { params }: Params) {
 // DELETE - Remove an account entry
 export async function DELETE(req: NextRequest, { params }: Params) {
   try {
-    console.log('DELETE account request - User ID:', params.id, 'Account ID:', params.accountId);
+    console.log('🔍 DELETE account request - User ID:', params.id, 'Account ID:', params.accountId);
     
     if (!isValidMongoId(params.id) || !isValidMongoId(params.accountId)) {
+      console.log('❌ Invalid MongoDB ID format');
       return createErrorResponse('Invalid MongoDB ID format', { 
         userId: params.id, 
         accountId: params.accountId 
@@ -190,29 +224,40 @@ export async function DELETE(req: NextRequest, { params }: Params) {
     }
     
     await dbConnect();
+    console.log('✅ Database connected');
     
-    // Convert string IDs to ObjectId
-    const userId = new mongoose.Types.ObjectId(params.id);
-    const accountId = new mongoose.Types.ObjectId(params.accountId);
-
     // Verify user exists
-    const user = await User.findById(userId);
+    const user = await User.findById(params.id);
+    console.log('👤 User lookup result:', user ? `Found: ${user.name}` : 'Not found');
+    
     if (!user) {
       return createErrorResponse('User not found', { userId: params.id }, 404);
     }
 
-    // Delete account entry
-    const accountEntry = await Account.findOneAndDelete({
-      _id: accountId,
-      userId: userId
-    });
-
-    if (!accountEntry) {
-      return createErrorResponse('Account entry not found or does not belong to this user', { 
-        accountId: params.accountId,
-        userId: params.id
+    // Check if account exists first (for debugging)
+    const existingAccount = await Account.findById(params.accountId);
+    console.log('🔍 Existing account check:', existingAccount ? `Found, belongs to: ${existingAccount.userId}` : 'Not found');
+    
+    
+    if (!existingAccount) {
+      return createErrorResponse('Account entry not found', { 
+        accountId: params.accountId
       }, 404);
     }
+    
+    if (existingAccount.userId.toString() !== params.id) {
+      return createErrorResponse('Account entry does not belong to this user', { 
+        accountId: params.accountId,
+        userId: params.id,
+        actualUserId: existingAccount.userId.toString()
+      }, 403);
+    }
+
+    // Delete account entry
+    console.log('🗑️ Deleting account...');
+    const accountEntry = await Account.findByIdAndDelete(params.accountId);
+
+    console.log('✅ Account deleted successfully');
     
     return NextResponse.json({ 
       success: true,
@@ -220,7 +265,7 @@ export async function DELETE(req: NextRequest, { params }: Params) {
       deletedAccount: accountEntry
     }, { status: 200 });
   } catch (error: any) {
-    console.error('Failed to delete account entry:', error);
+    console.error('❌ Failed to delete account entry:', error);
     return createErrorResponse('Failed to delete account entry', error.message, 500);
   }
 }

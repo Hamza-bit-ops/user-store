@@ -1,9 +1,7 @@
 {
   "/page": "app/page.js",
+  "/calculater/page": "app/calculater/page.js",
   "/users/page": "app/users/page.js",
   "/daily-records/page": "app/daily-records/page.js",
-  "/api/items/route": "app/api/items/route.js",
-  "/api/items/[id]/route": "app/api/items/[id]/route.js",
-  "/api/users/route": "app/api/users/route.js",
-  "/api/users/[id]/accounts/route": "app/api/users/[id]/accounts/route.js"
+  "/login/page": "app/login/page.js"
 }

@@ -18,6 +18,29 @@ export default function UserList({ users, onEdit, onDelete, onRefresh }: UserLis
   const [showModal, setShowModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'ascending' | 'descending' } | null>(null);
+const [showPasswordPrompt, setShowPasswordPrompt] = useState(false);
+const [passwordInput, setPasswordInput] = useState("");
+const [pendingUser, setPendingUser] = useState<UserData | null>(null);
+
+const VIEW_PASSWORD = "786";
+
+
+const handleViewClick = (user: UserData) => {
+  setPendingUser(user);       // jis user ko dekhna hai
+  setShowPasswordPrompt(true); // password modal khol do
+};
+
+const handlePasswordSubmit = () => {
+  if (passwordInput === VIEW_PASSWORD) {
+    setSelectedUser(pendingUser);
+    setShowModal(true);
+    setPasswordInput("");
+    setShowPasswordPrompt(false);
+  } else {
+    alert("❌ Wrong password");
+  }
+};
+
 
   const handleDeleteClick = async (userId: string) => {
     if (confirmDelete === userId) {
@@ -132,11 +155,12 @@ export default function UserList({ users, onEdit, onDelete, onRefresh }: UserLis
                   <td className="px-4 py-3 truncate max-w-xs">{user.address}</td>
                   <td className="px-4 py-3 text-right space-x-2">
                     <button
-                      onClick={() => handleViewDetails(user)}
-                      className="text-blue-600 hover:text-blue-800"
-                    >
-                      <Eye className="h-5 w-5 inline" />
-                    </button>
+  onClick={() => handleViewClick(user)}
+  className="text-blue-600 hover:text-blue-800"
+>
+  <Eye className="h-5 w-5 inline" />
+</button>
+
                     <button
                       onClick={() => onEdit(user)}
                       className="text-green-600 hover:text-green-800"
@@ -161,6 +185,37 @@ export default function UserList({ users, onEdit, onDelete, onRefresh }: UserLis
         </table>
       </div>
 
+/* Password Prompt Modal */
+{showPasswordPrompt && (
+  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+    <div className="bg-white p-6 rounded-lg shadow-lg w-80">
+      <h3 className="text-lg font-semibold mb-4">Enter Password</h3>
+      <input
+        type="password"
+        value={passwordInput}
+        onChange={(e) => setPasswordInput(e.target.value)}
+        className="w-full border rounded-md px-3 py-2 mb-4"
+        placeholder="Password"
+      />
+      <div className="flex justify-end space-x-2">
+        <button
+          onClick={() => setShowPasswordPrompt(false)}
+          className="px-4 py-2 bg-gray-300 rounded-md"
+        >
+          Cancel
+        </button>
+        <button
+          onClick={handlePasswordSubmit}
+          className="px-4 py-2 bg-blue-600 text-white rounded-md"
+        >
+          Submit
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
+//userDetail
       {showModal && selectedUser && (
         <UserDetailsModal
           user={selectedUser}
