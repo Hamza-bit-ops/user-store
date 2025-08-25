@@ -15,6 +15,7 @@ export default function AuthWrapper({ children }: { children: React.ReactNode })
       localStorage.removeItem("expiryTime");
       router.push("/login");
     } else {
+        
       setLoading(false);
     }
   }, [router]);

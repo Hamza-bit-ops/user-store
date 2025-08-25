@@ -12,6 +12,8 @@ export default function LoginPage() {
   const FIXED_PASSWORD = "12345"; // apna password rakh lo
   const EXPIRY_HOURS = 24;
 
+  
+
   // Agar already login hai to redirect
   useEffect(() => {
     const token = localStorage.getItem("authToken");
