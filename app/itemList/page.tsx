@@ -135,10 +135,6 @@ export default function LocalStorageList() {
           </li>
         ))}
 
-
-
-        
-
         {items.length === 0 && (
           <li className="text-gray-500 text-center py-3 text-sm italic">
             Nothing saved yet...
