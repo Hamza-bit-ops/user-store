@@ -1,8 +1,7 @@
 {
   "/daily-records/page": "app/daily-records/page.js",
-  "/calculater/page": "app/calculater/page.js",
-  "/page": "app/page.js",
-  "/login/page": "app/login/page.js",
   "/itemList/page": "app/itemList/page.js",
-  "/api/items/route": "app/api/items/route.js"
+  "/calculater/page": "app/calculater/page.js",
+  "/login/page": "app/login/page.js",
+  "/page": "app/page.js"
 }
