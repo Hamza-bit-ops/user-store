@@ -67,7 +67,7 @@ export default function RootLayout({
                             : 'text-gray-600'
                         }`}
                       >
-                        Users
+                        Customers
                       </Link>
                       <Link
                         href="/daily-records"
@@ -78,6 +78,16 @@ export default function RootLayout({
                         }`}
                       >
                         Daily Records
+                      </Link>
+                      <Link
+                        href="/itemList"
+                        className={`px-3 py-2 rounded-md text-sm font-medium ${
+                          pathname === '/calculater'
+                            ? 'text-blue-600'
+                            : 'text-gray-600'
+                        }`}
+                      >
+                        Item List
                       </Link>
                       <Link
                         href="/calculater"

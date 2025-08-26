@@ -18,28 +18,28 @@ export default function UserList({ users, onEdit, onDelete, onRefresh }: UserLis
   const [showModal, setShowModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'ascending' | 'descending' } | null>(null);
-const [showPasswordPrompt, setShowPasswordPrompt] = useState(false);
-const [passwordInput, setPasswordInput] = useState("");
-const [pendingUser, setPendingUser] = useState<UserData | null>(null);
+  const [showPasswordPrompt, setShowPasswordPrompt] = useState(false);
+  const [passwordInput, setPasswordInput] = useState("");
+  const [pendingUser, setPendingUser] = useState<UserData | null>(null);
 
-const VIEW_PASSWORD = "786";
+  const VIEW_PASSWORD = "786";
 
 
-const handleViewClick = (user: UserData) => {
-  setPendingUser(user);       // jis user ko dekhna hai
-  setShowPasswordPrompt(true); // password modal khol do
-};
+  const handleViewClick = (user: UserData) => {
+    setPendingUser(user);       // jis user ko dekhna hai
+    setShowPasswordPrompt(true); // password modal khol do
+  };
 
-const handlePasswordSubmit = () => {
-  if (passwordInput === VIEW_PASSWORD) {
-    setSelectedUser(pendingUser);
-    setShowModal(true);
-    setPasswordInput("");
-    setShowPasswordPrompt(false);
-  } else {
-    alert("❌ Wrong password");
-  }
-};
+  const handlePasswordSubmit = () => {
+    if (passwordInput === VIEW_PASSWORD) {
+      setSelectedUser(pendingUser);
+      setShowModal(true);
+      setPasswordInput("");
+      setShowPasswordPrompt(false);
+    } else {
+      alert("❌ Wrong password");
+    }
+  };
 
 
   const handleDeleteClick = async (userId: string) => {
@@ -92,8 +92,8 @@ const handlePasswordSubmit = () => {
     if (!sortConfig || sortConfig.key !== columnKey) {
       return <ChevronDown className="h-4 w-4 opacity-30" />;
     }
-    return sortConfig.direction === 'ascending' 
-      ? <ChevronUp className="h-4 w-4" /> 
+    return sortConfig.direction === 'ascending'
+      ? <ChevronUp className="h-4 w-4" />
       : <ChevronDown className="h-4 w-4" />;
   };
 
@@ -104,7 +104,7 @@ const handlePasswordSubmit = () => {
         <div className="flex items-center mb-4 md:mb-0">
           <Users className="h-6 w-6 text-blue-600 mr-2" />
           <h2 className="text-xl font-semibold text-gray-800">
-            Users ({users.length})
+            Customer ({users.length})
           </h2>
         </div>
 
@@ -113,7 +113,7 @@ const handlePasswordSubmit = () => {
           <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
           <input
             type="text"
-            placeholder="Search users..."
+            placeholder="Search customers..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="pl-10 pr-3 py-2 border rounded-md w-64 text-sm focus:ring-blue-500 focus:border-blue-500"
@@ -155,11 +155,11 @@ const handlePasswordSubmit = () => {
                   <td className="px-4 py-3 truncate max-w-xs">{user.address}</td>
                   <td className="px-4 py-3 text-right space-x-2">
                     <button
-  onClick={() => handleViewClick(user)}
-  className="text-blue-600 hover:text-blue-800"
->
-  <Eye className="h-5 w-5 inline" />
-</button>
+                      onClick={() => handleViewClick(user)}
+                      className="text-blue-600 hover:text-blue-800"
+                    >
+                      <Eye className="h-5 w-5 inline" />
+                    </button>
 
                     <button
                       onClick={() => onEdit(user)}
@@ -169,11 +169,10 @@ const handlePasswordSubmit = () => {
                     </button>
                     <button
                       onClick={() => handleDeleteClick(user._id!)}
-                      className={`${
-                        confirmDelete === user._id
+                      className={`${confirmDelete === user._id
                           ? 'text-red-800'
                           : 'text-red-600 hover:text-red-800'
-                      }`}
+                        }`}
                     >
                       <Trash2 className="h-5 w-5 inline" />
                     </button>
@@ -185,37 +184,35 @@ const handlePasswordSubmit = () => {
         </table>
       </div>
 
-/* Password Prompt Modal */
-{showPasswordPrompt && (
-  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-    <div className="bg-white p-6 rounded-lg shadow-lg w-80">
-      <h3 className="text-lg font-semibold mb-4">Enter Password</h3>
-      <input
-        type="password"
-        value={passwordInput}
-        onChange={(e) => setPasswordInput(e.target.value)}
-        className="w-full border rounded-md px-3 py-2 mb-4"
-        placeholder="Password"
-      />
-      <div className="flex justify-end space-x-2">
-        <button
-          onClick={() => setShowPasswordPrompt(false)}
-          className="px-4 py-2 bg-gray-300 rounded-md"
-        >
-          Cancel
-        </button>
-        <button
-          onClick={handlePasswordSubmit}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md"
-        >
-          Submit
-        </button>
-      </div>
-    </div>
-  </div>
-)}
+      {showPasswordPrompt && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-80">
+            <h3 className="text-lg font-semibold mb-4">Enter Password</h3>
+            <input
+              type="password"
+              value={passwordInput}
+              onChange={(e) => setPasswordInput(e.target.value)}
+              className="w-full border rounded-md px-3 py-2 mb-4"
+              placeholder="Password"
+            />
+            <div className="flex justify-end space-x-2">
+              <button
+                onClick={() => setShowPasswordPrompt(false)}
+                className="px-4 py-2 bg-gray-300 rounded-md"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handlePasswordSubmit}
+                className="px-4 py-2 bg-blue-600 text-white rounded-md"
+              >
+                Submit
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
-//userDetail
       {showModal && selectedUser && (
         <UserDetailsModal
           user={selectedUser}

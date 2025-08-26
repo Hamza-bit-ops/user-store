@@ -125,9 +125,9 @@ export default function UserDetailsModal({
           description: formData.description.trim(),
         }),
       });
-      
+
       const data = await res.json();
-      
+
       if (res.ok) {
         await fetchAccounts();
         setShowAddForm(false);
@@ -162,9 +162,9 @@ export default function UserDetailsModal({
           }),
         }
       );
-      
+
       const data = await res.json();
-      
+
       if (res.ok) {
         await fetchAccounts();
         setEditingEntry(null);
@@ -185,14 +185,14 @@ export default function UserDetailsModal({
   const handleDeleteEntry = async (id: string) => {
     if (!user._id) return;
     if (!confirm("Are you sure you want to delete this entry?")) return;
-    
+
     try {
-      const res = await fetch(`/api/users/${user._id}/accounts/${id}`, { 
-        method: "DELETE" 
+      const res = await fetch(`/api/users/${user._id}/accounts/${id}`, {
+        method: "DELETE"
       });
-      
+
       const data = await res.json();
-      
+
       if (res.ok) {
         await fetchAccounts();
         alert("Entry deleted successfully!");
@@ -271,9 +271,8 @@ export default function UserDetailsModal({
           <div className="bg-gray-800 p-4 rounded-xl text-center">
             <p className="text-sm text-gray-400">Net Balance</p>
             <p
-              className={`text-2xl font-bold ${
-                calculateBalance() >= 0 ? "text-green-400" : "text-red-400"
-              }`}
+              className={`text-2xl font-bold ${calculateBalance() >= 0 ? "text-green-400" : "text-red-400"
+                }`}
             >
               PKR {calculateBalance().toLocaleString()}
             </p>
@@ -311,24 +310,36 @@ export default function UserDetailsModal({
                 placeholder="Amount"
                 value={formData.amount}
                 onChange={(e) => handleFormChange("amount", e.target.value)}
-                className={`w-full p-2 rounded bg-gray-700 text-white border ${
-                  errors.amount ? "border-red-500" : "border-gray-600"
-                }`}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    editingEntry ? handleUpdateEntry() : handleAddEntry();
+                  }
+                }}
+                className={`w-full p-2 rounded bg-gray-700 text-white border ${errors.amount ? "border-red-500" : "border-gray-600"
+                  }`}
                 disabled={isSubmitting}
                 min="0.01"
                 step="0.01"
               />
+
               <input
                 type="text"
                 placeholder="Description"
                 value={formData.description}
                 onChange={(e) => handleFormChange("description", e.target.value)}
-                className={`w-full p-2 rounded bg-gray-700 text-white border ${
-                  errors.description ? "border-red-500" : "border-gray-600"
-                }`}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    editingEntry ? handleUpdateEntry() : handleAddEntry();
+                  }
+                }}
+                className={`w-full p-2 rounded bg-gray-700 text-white border ${errors.description ? "border-red-500" : "border-gray-600"
+                  }`}
                 disabled={isSubmitting}
                 maxLength={200}
               />
+
               <div className="text-xs text-gray-400">
                 {formData.description.length}/200 characters
               </div>
@@ -338,8 +349,8 @@ export default function UserDetailsModal({
                   disabled={isSubmitting}
                   className="flex-1 bg-green-600 hover:bg-green-700 disabled:bg-green-800 disabled:cursor-not-allowed text-white py-2 rounded transition"
                 >
-                  {isSubmitting 
-                    ? (editingEntry ? "Updating..." : "Adding...") 
+                  {isSubmitting
+                    ? (editingEntry ? "Updating..." : "Adding...")
                     : (editingEntry ? "Update Entry" : "Add Entry")
                   }
                 </button>
@@ -468,11 +479,10 @@ export default function UserDetailsModal({
                       <td className="border border-gray-700 px-4 py-2 text-center">
                         Net:{" "}
                         <span
-                          className={`${
-                            calculateBalance() >= 0
+                          className={`${calculateBalance() >= 0
                               ? "text-green-400"
                               : "text-red-400"
-                          }`}
+                            }`}
                         >
                           PKR {calculateBalance().toLocaleString()}
                         </span>

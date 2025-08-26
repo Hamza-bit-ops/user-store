@@ -21,6 +21,9 @@ export default function ItemsPage() {
   const [allItems, setAllItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  // Filter type: "today" | "all" | "range"
+const [filterType, setFilterType] = useState<"today" | "all" | "range">("today");
+
 
   // Pagination
   const [page, setPage] = useState(1);
@@ -56,9 +59,19 @@ export default function ItemsPage() {
   }, [fromDate, toDate]);
 
   // ---- Derived lists ----
-  const filteredItems = useMemo(() => {
-    let list = [...allItems];
+const filteredItems = useMemo(() => {
+  let list = [...allItems];
 
+  if (filterType === "today") {
+    const todayStr = new Date().toLocaleDateString("en-GB");
+    return list.filter((i) => i.date === todayStr);
+  }
+
+  if (filterType === "all") {
+    return list;
+  }
+
+  if (filterType === "range") {
     if (fromDate) {
       const from = new Date(fromDate + "T00:00:00");
       list = list.filter((i) => parseDDMMYYYY(i.date) >= from);
@@ -68,7 +81,12 @@ export default function ItemsPage() {
       list = list.filter((i) => parseDDMMYYYY(i.date) <= to);
     }
     return list;
-  }, [allItems, fromDate, toDate]);
+  }
+
+  return list;
+}, [allItems, filterType, fromDate, toDate]);
+
+
 
   const totalPages = Math.max(1, Math.ceil(filteredItems.length / limit));
 
@@ -199,29 +217,45 @@ export default function ItemsPage() {
         </form>
 
         {/* Filters */}
-        <div className="flex flex-wrap gap-3 mb-6">
-          <input
-            type="date"
-            value={fromDate}
-            onChange={(e) => setFromDate(e.target.value)}
-            className="border rounded px-3 py-2"
-          />
-          <input
-            type="date"
-            value={toDate}
-            onChange={(e) => setToDate(e.target.value)}
-            className="border rounded px-3 py-2"
-          />
-          <button
-            onClick={() => {
-              setFromDate("");
-              setToDate("");
-            }}
-            className="bg-gray-500 text-white px-4 py-2 rounded"
-          >
-            Clear
-          </button>
-        </div>
+      {/* Filters */}
+<div className="flex flex-wrap gap-3 mb-6">
+  <select
+    value={filterType}
+    onChange={(e) => setFilterType(e.target.value as "today" | "all" | "range")}
+    className="border rounded px-3 py-2"
+  >
+    <option value="today">Today</option>
+    <option value="all">All</option>
+    <option value="range">Custom Range</option>
+  </select>
+
+  {filterType === "range" && (
+    <>
+      <input
+        type="date"
+        value={fromDate}
+        onChange={(e) => setFromDate(e.target.value)}
+        className="border rounded px-3 py-2"
+      />
+      <input
+        type="date"
+        value={toDate}
+        onChange={(e) => setToDate(e.target.value)}
+        className="border rounded px-3 py-2"
+      />
+      <button
+        onClick={() => {
+          setFromDate("");
+          setToDate("");
+        }}
+        className="bg-gray-500 text-white px-4 py-2 rounded"
+      >
+        Clear
+      </button>
+    </>
+  )}
+</div>
+
 
         {/* Totals Summary */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">

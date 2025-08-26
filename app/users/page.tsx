@@ -126,7 +126,7 @@ export default function UsersPage() {
         <div className="flex items-center justify-center space-x-3">
           <Users className="h-10 w-10 text-blue-600" />
           <h1 className="text-3xl font-bold text-gray-800">
-            User Management System
+            Customers Management System
           </h1>
         </div>
 
@@ -136,7 +136,7 @@ export default function UsersPage() {
             <UserForm
               onSubmit={handleUserSubmit}
               initialValues={editingUser || undefined}
-              buttonText={editingUser ? "Update User" : "Create User"}
+              buttonText={editingUser ? "Update Customer" : "Create Customer"}
             />
             <div className="text-center">
               <button
@@ -160,7 +160,7 @@ export default function UsersPage() {
               className="flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow"
             >
               <Plus className="h-5 w-5" />
-              Add New User
+              Add New Customer
             </button>
           </div>
         )}
@@ -168,9 +168,9 @@ export default function UsersPage() {
         {/* Users List */}
         <div className="bg-white rounded-xl shadow p-6">
           {loading ? (
-            <p className="text-gray-600 text-center">Loading users...</p>
+            <p className="text-gray-600 text-center">Loading customers...</p>
           ) : users.length === 0 ? (
-            <p className="text-gray-600 text-center">No users found.</p>
+            <p className="text-gray-600 text-center">No customers found.</p>
           ) : (
             <UserList
               users={users}
