@@ -4,7 +4,6 @@ import { Edit, Plus, TrendingUp, Calendar, FileText, BarChart3, Shield, Database
 export default function Home() {
   return (
     <div className="min-h-screen bg-gray-100">
-      {/* Hero Section */}
       <div className="text-center pt-16 pb-12 px-4">
         <div className="mb-6">
           <FileText className="h-16 w-16 mx-auto text-blue-600" />
@@ -28,8 +27,6 @@ export default function Home() {
           </button>
         </div>
       </div>
-
-      {/* Features */}
       <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
         {[
           { icon: Plus, title: "Create Records", desc: "Instantly add new entries" },
@@ -46,8 +43,6 @@ export default function Home() {
           </div>
         ))}
       </div>
-
-      {/* Dashboard Preview */}
       <div className="max-w-6xl mx-auto px-6 mb-12">
         <div className="bg-white rounded-lg shadow p-6">
           <h3 className="text-2xl font-bold text-gray-800 mb-4 text-center">
@@ -56,9 +51,7 @@ export default function Home() {
           <p className="text-center text-gray-600 mb-8">
             Advanced features for professional logging
           </p>
-
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Left Panel */}
             <div className="space-y-4">
               <div className="p-4 border rounded-md">
                 <h4 className="text-lg font-semibold text-gray-800 mb-2 flex items-center">
@@ -74,8 +67,6 @@ export default function Home() {
                 <p className="text-gray-600">Dynamic visualizations of your data</p>
               </div>
             </div>
-
-            {/* Right Panel */}
             <div className="p-4 border rounded-md text-center">
               <h4 className="text-lg font-semibold text-gray-800 mb-2">Simple Dashboard Preview</h4>
               <p className="text-gray-600">Easy to understand and responsive design.</p>
@@ -83,8 +74,6 @@ export default function Home() {
           </div>
         </div>
       </div>
-
-      {/* CTA */}
       <div className="bg-blue-600 text-center py-12">
         <h3 className="text-3xl font-bold text-white mb-4">
           Ready to Transform Your Workflow?

@@ -26,7 +26,7 @@ export default function RootLayout({
     } else {
       setIsLoggedIn(false);
     }
-  }, [pathname]); // har page change pe check kare
+  }, [pathname]); 
 
   const handleLogout = () => {
     localStorage.removeItem("authToken");
@@ -43,7 +43,6 @@ export default function RootLayout({
             <div className="max-w-7xl mx-auto px-6 py-8">{children}</div>
           ) : (
             <AuthWrapper>
-              {/* Navigation */}
               <nav className="bg-white shadow sticky top-0 z-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                   <div className="flex justify-between h-16 items-center">
@@ -99,8 +98,6 @@ export default function RootLayout({
                       >
                         Calculater
                       </Link>
-
-                      {/* 👇 Logout button sirf jab logged in ho */}
                       {isLoggedIn && (
                         <button
                           onClick={handleLogout}
@@ -113,8 +110,6 @@ export default function RootLayout({
                   </div>
                 </div>
               </nav>
-
-              {/* Page Content */}
               <div className="max-w-7xl mx-auto px-6 py-8">{children}</div>
             </AuthWrapper>
           )}

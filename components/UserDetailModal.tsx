@@ -278,7 +278,6 @@ export default function UserDetailsModal({
             </p>
           </div>
 
-          {/* Error Display */}
           {Object.keys(errors).length > 0 && (
             <div className="bg-red-800/50 border border-red-600 rounded-xl p-4">
               <h3 className="text-red-200 font-semibold mb-2">Please fix the following errors:</h3>

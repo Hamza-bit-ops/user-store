@@ -65,8 +65,6 @@ export default function LocalStorageList() {
   return (
     <div className="max-w-md mx-auto mt-10 p-6 bg-gray-900 rounded-2xl shadow-2xl text-white">
       <h2 className="text-xl font-semibold mb-5 text-center">📋 Saved Items</h2>
-
-      {/* Input */}
       <div className="flex items-center gap-2 mb-6">
         <input
           type="text"
@@ -84,8 +82,6 @@ export default function LocalStorageList() {
           Add
         </button>
       </div>
-
-      {/* List */}
       <ul className="space-y-3">
         {items.map((item) => (
           <li
