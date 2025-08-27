@@ -344,7 +344,6 @@ export default function UsersPage() {
           )}
         </div>
 
-        {/* Add New User Button or Form */}
         {showForm ? (
           <div className="bg-white rounded-xl shadow p-6 space-y-4">
             <UserForm
@@ -364,6 +363,7 @@ export default function UsersPage() {
               </button>
             </div>
           </div>
+
         ) : (
           <div className="text-center">
             <button
