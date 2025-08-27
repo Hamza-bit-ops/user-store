@@ -11,6 +11,11 @@
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
     ],
+    "/login/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/login/page.js"
+    ],
     "/users/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
@@ -21,20 +26,10 @@
       "static/chunks/main-app.js",
       "static/chunks/app/daily-records/page.js"
     ],
-    "/calculater/page": [
+    "/_not-found/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/calculater/page.js"
-    ],
-    "/itemList/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/itemList/page.js"
-    ],
-    "/login/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/login/page.js"
+      "static/chunks/app/_not-found/page.js"
     ]
   }
 }
