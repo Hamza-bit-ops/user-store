@@ -70,10 +70,7 @@ export default function UsersPage() {
           }
         });
 
-      // Wait for all requests to complete
       const allAccountsArrays = await Promise.all(accountPromises);
-      
-      // Flatten and process all accounts
       const allAccounts = allAccountsArrays.flat();
       
       allAccounts.forEach((account: any) => {
