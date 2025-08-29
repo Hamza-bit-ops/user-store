@@ -1,5 +1,9 @@
 {
-  "/login/page": "app/login/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
   "/users/page": "app/users/page.js",
-  "/daily-records/page": "app/daily-records/page.js"
+  "/login/page": "app/login/page.js",
+  "/daily-records/page": "app/daily-records/page.js",
+  "/api/users/route": "app/api/users/route.js",
+  "/api/users/[id]/accounts/route": "app/api/users/[id]/accounts/route.js",
+  "/page": "app/page.js"
 }

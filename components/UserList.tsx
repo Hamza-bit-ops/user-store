@@ -116,6 +116,7 @@ export default function UserList({ users, onEdit, onDelete, onRefresh }: UserLis
             placeholder="Search customers..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
+            autoComplete="off"  
             className="pl-10 pr-3 py-2 border rounded-md w-64 text-sm focus:ring-blue-500 focus:border-blue-500"
           />
         </div>
