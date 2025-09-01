@@ -89,6 +89,16 @@ export default function RootLayout({
                         Item List
                       </Link>
                       <Link
+                        href="/credit-debit"
+                        className={`px-3 py-2 rounded-md text-sm font-medium ${
+                          pathname === '/amounts'
+                            ? 'text-blue-600'
+                            : 'text-gray-600'
+                        }`}
+                      >
+                        Daily Debit & Credit
+                      </Link>
+                      <Link
                         href="/calculater"
                         className={`px-3 py-2 rounded-md text-sm font-medium ${
                           pathname === '/calculater'
