@@ -25,6 +25,7 @@ export default function TransactionManager() {
   const [currentPage, setCurrentPage] = useState(1);
   const [filterDate, setFilterDate] = useState("");
   const [loading, setLoading] = useState(false);
+  const [creating, setCreating] = useState(false); // New state for creating transaction
 
   // Get today's date in YYYY-MM-DD format
   const getTodayDate = () => {
@@ -57,7 +58,7 @@ export default function TransactionManager() {
   // Add new transaction
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!amount || parseFloat(amount) <= 0) return;
+    if (!amount || parseFloat(amount) <= 0 || creating) return; // Prevent if already creating
 
     const newTransaction = {
       amount: parseFloat(amount),
@@ -66,6 +67,7 @@ export default function TransactionManager() {
     };
 
     try {
+      setCreating(true); // Set creating state to true
       const res = await fetch("/api/transaction", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -80,6 +82,8 @@ export default function TransactionManager() {
       }
     } catch (err) {
       console.error("Create error:", err);
+    } finally {
+      setCreating(false); // Reset creating state
     }
   };
 
@@ -243,10 +247,19 @@ export default function TransactionManager() {
               <button
                 onClick={handleSubmit}
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled={!amount || parseFloat(amount) <= 0}
+                disabled={!amount || parseFloat(amount) <= 0 || creating}
               >
-                <Plus className="w-4 h-4" />
-                Add
+                {creating ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    Adding...
+                  </>
+                ) : (
+                  <>
+                    <Plus className="w-4 h-4" />
+                    Add
+                  </>
+                )}
               </button>
             </div>
           </div>
